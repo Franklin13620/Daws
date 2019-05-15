@@ -1,0 +1,88 @@
+<?php include('header.php'); ?>
+<?php include('session.php'); ?>
+    <body>
+		<?php include('navbar.php'); ?>
+        <div class="container-fluid">
+            <div class="row-fluid">
+				<?php include('sidebar.php'); ?>
+                <div class="span9" id="content">
+                     <div class="row-fluid">
+
+                        <!-- interfaz para visualizar la actividad en el sistema -->
+				<div class="empty">
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                         <i class="icon-info-sign"></i>  <strong>Nota:</strong> Selecciona varios objetos para borrarlos
+                    </div>
+                </div>
+				
+				<?php	
+	             $count_log=mysql_query("select * from activity_log");
+	             $count = mysql_num_rows($count_log);
+                 ?>
+                        <div id="block_bg" class="block">
+                            <div class="navbar navbar-inner block-header">
+                                <div class="muted pull-left"><i class="icon-user"></i> Actividad de los usuarios</div>
+								<div class="muted pull-right">
+								Acciones totales en la actividad: <span class="badge badge-info"><?php  echo $count; ?></span>
+								</div>
+                            </div>
+                            <div class="block-content collapse in">
+                                <div class="span12">
+								<form action="delete_log.php" method="post">
+  									<table cellpadding="0" cellspacing="0" border="0" class="table" id="example">
+						            <a data-placement="right" title="" data-toggle="modal" href="#delete_log" id="delete"  class="btn btn-danger" name=""><i class="icon-trash icon-large"> Borrar</i></a>
+									
+									<?php include('modal_delete.php'); ?>
+										<thead>
+										        <tr>					
+                                                <th>Marcar</th>
+												<th>Fecha y hora</th>
+												<th>Usuario</th>
+												<th>Accion</th>
+												</tr>
+												
+										</thead>
+										<tbody>
+											
+                              		<?php
+										$query = mysql_query("select * from  activity_log 
+										LEFT JOIN admin ON activity_log.username = admin.username
+										order by date DESC")or die(mysql_error());
+										while($row = mysql_fetch_array($query)){
+										$id = $row['activity_log_id'];
+										$username = $row['username'];
+									?>
+							
+                                    <tr>
+					                    <td width="70">
+									     <input id="optionsCheckbox" class="uniform_on" name="selector[]" type="checkbox" value="<?php echo $id; ?>">
+								        </td>
+
+                                         <td><i class="icon-calendar"></i>&nbsp;
+										 <?php  echo $row['date']; ?></td>
+                                         <td><img id="avatar1" src="<?php echo $row['adminthumbnails']; ?>">&nbsp;
+										 <?php echo $row['username']; ?></td>
+                                         <td><i class="icon-tasks"></i>&nbsp;
+										 <?php echo $row['action']; ?></td>
+
+                                        </tr>
+                         
+						                 <?php } ?>
+						   
+                              
+										</tbody>
+									</table>
+								</form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+		<?php include('footer.php'); ?>
+        </div>
+		<?php include('script.php'); ?>
+    </body>
